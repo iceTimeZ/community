@@ -1,0 +1,39 @@
+# ServerProperties
+server:
+  port: 8080
+  servlet:
+    context-path: /community
+
+
+# ThymeleafProperties
+
+spring:
+  thymeleaf:
+    cache: false
+
+  # DataSourceProperties
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/community
+    username: root
+    password: 19950915
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+
+
+# 将关系型数据库中的字段 header_url  转为 headerUrl 驼峰命名法
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  # 这个的作用是自动给entity包下的类起别名，别名为全小写，这样resultType=第一个字母小写类名,就不用写全类名了
+  type-aliases-package: edu.tongji.community.entity
+  configuration:
+    # 能返回刚插入的数据的自增主键值，如自增主键为 userId,但插入一条数据时并没有给userId赋值
+    # 插入后user.getUserId将能得到插入后的userId值，不用再额外写一条查询语句去getId，无该语句将get null
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+
+#logging.level.com.nowcoder.community=debug
+#logging.file=d:/work/data/nowcoder/community.log
