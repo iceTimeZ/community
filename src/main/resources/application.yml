@@ -22,7 +22,25 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
-
+  mail:
+    #smtp服务主机  qq邮箱则为smtp.qq.com
+    host: smtp.163.com
+    #服务协议
+    protocol: smtp
+    # 编码集
+    default-encoding: UTF-8
+    #发送邮件的账户
+    username: 18221239915@163.com
+    #授权码
+    password: 19950915
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 # 将关系型数据库中的字段 header_url  转为 headerUrl 驼峰命名法
 mybatis:
@@ -37,3 +55,15 @@ mybatis:
 
 #logging.level.com.nowcoder.community=debug
 #logging.file=d:/work/data/nowcoder/community.log
+
+# community
+community:
+  path:
+    domain: http://localhost:8080
+
+
+
+
+
+
+
