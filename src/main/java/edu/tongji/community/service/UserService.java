@@ -19,4 +19,8 @@ public interface UserService {
     public void logout(String ticket);
 
     public LoginTicket findLoginTicket(String ticket);
+
+    public int updateHeader(int userId, String headerUrl);
+
+    public User findUserByName(String username);
 }

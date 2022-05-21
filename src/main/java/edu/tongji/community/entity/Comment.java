@@ -7,15 +7,14 @@ import java.util.Date;
 
 @Data
 @ToString
-public class DiscussPost {
+public class Comment {
 
-    private Integer id;
-    private Integer userId;
-    private String title;
+    private int id;
+    private int userId;
+    private int entityType;
+    private int entityId;
+    private int targetId;
     private String content;
-    private int type;
     private int status;
     private Date createTime;
-    private int commentCount;
-    private double score;
 }

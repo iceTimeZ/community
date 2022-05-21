@@ -13,8 +13,8 @@ public class User {
     private String password;
     private String salt;
     private String email;
-    private Integer type;
-    private Integer status;
+    private int type;
+    private int status;
     private String activationCode;
     private String headerUrl;
     private Date createTime;
