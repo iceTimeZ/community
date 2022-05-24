@@ -3,7 +3,10 @@ package edu.tongji.community.controller;
 import com.alibaba.druid.sql.ast.statement.SQLPurgeLogsStatement;
 import edu.tongji.community.annotation.LoginRequired;
 import edu.tongji.community.entity.User;
+import edu.tongji.community.service.FollowService;
+import edu.tongji.community.service.LikeService;
 import edu.tongji.community.service.UserService;
+import edu.tongji.community.util.CommunityConstant;
 import edu.tongji.community.util.CommunityUtil;
 import edu.tongji.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +26,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.rtf.RTFEditorKit;
+import java.awt.desktop.UserSessionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -45,7 +50,13 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private FollowService followService;
+
+    @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
     // 跳转到设置页面
     @LoginRequired
@@ -95,16 +106,49 @@ public class UserController {
         // 响应图片
         response.setContentType("image/" + suffix);
         try (
-            FileInputStream fis = new FileInputStream(fileName);
-            ServletOutputStream os = response.getOutputStream();
-        ){
+                FileInputStream fis = new FileInputStream(fileName);
+                ServletOutputStream os = response.getOutputStream();
+        ) {
             byte[] buffer = new byte[1024];
             int b = 0;
             while ((b = fis.read(buffer)) != -1) {
                 os.write(buffer, 0, b);
             }
         } catch (IOException e) {
-            logger.error("读取头像失败："  + e.getMessage() );
+            logger.error("读取头像失败：" + e.getMessage());
         }
     }
+
+
+    // 个人主页
+    @GetMapping("/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("该用户不存在！");
+        }
+
+        // 用户
+        model.addAttribute("user", user);
+        // 点赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", likeCount);
+
+        // 关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount", followeeCount);
+
+        // 粉丝数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+
+        // 是否已关注
+        boolean hasFollowed = false;
+        if(hostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
+        return "/site/profile";
+    }
+
 }

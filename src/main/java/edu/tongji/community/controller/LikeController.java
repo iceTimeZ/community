@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +25,11 @@ public class LikeController {
 
     @PostMapping("/like")
     @ResponseBody
-    public String like(int entityType, int entityId) {
+    public String like(int entityType, int entityId, int entityUserId) {
         User user = hostHolder.getUser();
 
         // 点赞
-        likeService.like(user.getId(), entityType, entityId);
+        likeService.like(user.getId(), entityType, entityId, entityUserId);
 
         // 数量
         long likeCount = likeService.findEntityLikeCount(entityType, entityId);
@@ -40,6 +41,5 @@ public class LikeController {
         map.put("likeStatus", likeStatus);
 
         return CommunityUtil.getJSONString(0, null, map);
-
     }
 }

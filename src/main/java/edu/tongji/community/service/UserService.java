@@ -23,4 +23,5 @@ public interface UserService {
     public int updateHeader(int userId, String headerUrl);
 
     public User findUserByName(String username);
+
 }
