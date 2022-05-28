@@ -6,6 +6,7 @@ import edu.tongji.community.service.CommentService;
 import edu.tongji.community.service.DiscussPostService;
 import edu.tongji.community.util.CommunityConstant;
 import edu.tongji.community.util.SensitiveFilter;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -54,5 +55,9 @@ public class CommentServiceImpl implements CommentService, CommunityConstant {
                 discussPostService.updateCommentCount(comment.getEntityId(), count);
             }
         return rows;
+    }
+
+    public Comment findCommentById(int id){
+        return commentMapper.selectCommentById(id);
     }
 }

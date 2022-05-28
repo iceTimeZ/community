@@ -2,8 +2,10 @@ package edu.tongji.community.controller;
 
 
 import edu.tongji.community.annotation.LoginRequired;
+import edu.tongji.community.entity.Event;
 import edu.tongji.community.entity.Page;
 import edu.tongji.community.entity.User;
+import edu.tongji.community.event.EventProducer;
 import edu.tongji.community.service.FollowService;
 import edu.tongji.community.service.UserService;
 import edu.tongji.community.util.CommunityConstant;
@@ -36,14 +38,25 @@ public class FollowController implements CommunityConstant {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private EventProducer eventProducer;
 
     @PostMapping("/follow")
     @ResponseBody
-    @LoginRequired
     public String follow(int entityType, int entityId) {
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+
+        // 触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "已关注");
     }
