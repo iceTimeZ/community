@@ -5,7 +5,6 @@ server:
     context-path: /community
 
 # ThymeleafProperties
-
 spring:
   thymeleaf:
     cache: false
@@ -53,6 +52,7 @@ spring:
     host: localhost
     port: 6379
 
+
 # 将关系型数据库中的字段 header_url  转为 headerUrl 驼峰命名法
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -72,6 +72,8 @@ community:
   path:
     domain: http://localhost:8080
     upload: /Users/still/Desktop/community/upload
+
+
 
 
 

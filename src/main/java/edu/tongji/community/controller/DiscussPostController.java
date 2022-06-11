@@ -1,10 +1,8 @@
 package edu.tongji.community.controller;
 
 import com.alibaba.druid.sql.ast.statement.SQLPurgeLogsStatement;
-import edu.tongji.community.entity.Comment;
-import edu.tongji.community.entity.DiscussPost;
-import edu.tongji.community.entity.Page;
-import edu.tongji.community.entity.User;
+import edu.tongji.community.entity.*;
+import edu.tongji.community.event.EventProducer;
 import edu.tongji.community.service.CommentService;
 import edu.tongji.community.service.DiscussPostService;
 import edu.tongji.community.service.LikeService;
@@ -39,6 +37,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @PostMapping("/add")
     @ResponseBody
     public String addDiscussPost(String title, String content) {
@@ -53,6 +54,14 @@ public class DiscussPostController implements CommunityConstant {
         post.setContent(content);
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
+
+        // 触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(post.getId());
+        eventProducer.fireEvent(event);
 
         // 报错的情况，将来统一处理
         return CommunityUtil.getJSONString(0, "发布成功");

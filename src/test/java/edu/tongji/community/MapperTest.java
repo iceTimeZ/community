@@ -1,12 +1,9 @@
 package edu.tongji.community;
 
-
-import com.alibaba.druid.sql.ast.statement.SQLPurgeLogsStatement;
 import edu.tongji.community.dao.LoginTicketMapper;
 import edu.tongji.community.dao.MessageMapper;
 import edu.tongji.community.entity.LoginTicket;
 import edu.tongji.community.entity.Message;
-import edu.tongji.community.util.CommunityUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,7 +44,7 @@ public class MapperTest {
     @Test
     public void testSelectLetters(){
         // 根据当前用户的ID查询所有的会话列表
-        List<Message> list = messageMapper.selectConversations(111,0,20);
+        List<edu.tongji.community.entity.Message> list = messageMapper.selectConversations(111,0,20);
         for(Message message : list){
             System.out.println(message);
         }

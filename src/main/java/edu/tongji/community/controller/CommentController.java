@@ -75,6 +75,15 @@ public class CommentController implements CommunityConstant {
         // 生产者发送消息
         eventProducer.fireEvent(event);
 
+        if (comment.getEntityType() == ENTITY_TYPE_POST) {
+            // 触发发帖事件
+            event = new Event()
+                    .setTopic(TOPIC_PUBLISH)
+                    .setUserId(comment.getUserId())
+                    .setEntityType(ENTITY_TYPE_POST)
+                    .setEntityId(discussPostId);
+            eventProducer.fireEvent(event);
+        }
         // 消息发完后就进行了页面跳转，而消息队列处理消息可能会有延迟，两者是并发的(异步的)，消息处理由另一个线程处理
         return "redirect:/discuss/detail/" + discussPostId;
     }
